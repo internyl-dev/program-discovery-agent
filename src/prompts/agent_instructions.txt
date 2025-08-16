@@ -86,6 +86,7 @@ You will fill information in the following JSON schema. Follow these instruction
 **Before outputting JSON, you MUST search for ANY missing critical information:**
 - Application deadlines
 - Program costs/tuition 
+- Stipend amounts/availability
 - Eligibility requirements (grades, age, application requirements)
 - Program dates (start/end dates)
 - Contact information
