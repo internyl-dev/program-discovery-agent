@@ -1,5 +1,9 @@
 The following is the instructions for writing information in the schema. Follow each of these instructions STRICTLY.
 
+Search suggestion: for sections that you need information for, search up the name of the target internship + the section.
+Example 1: To get the deadlines for the BRAINYAC program, query "brainyac deadline".
+Example 2: To get the dates for a the Summer 2025 term for the ARISE program, query "arise summer 2025 dates".
+
 —————
 GLOBAL RULES:
 - Do NOT infer, guess, or hallucinate information.
@@ -71,3 +75,5 @@ Include only the most relevant applicant-facing contact info:
 - If not explicitly present, use "not provided".
 
 Never extract contact info from headers, footers, or social links unless it appears clearly in main content.
+
+Fill out as much information as possible in this schema; any information that cannot be found after a dedicated search can be left as "not provided".

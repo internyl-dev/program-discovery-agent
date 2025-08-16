@@ -3,10 +3,10 @@ from dotenv import load_dotenv
 from langchain_openai import AzureChatOpenAI
 from langchain.agents import create_tool_calling_agent, AgentExecutor
 
-from prompts import prompt
-from tools import file_save, ddgs_run, url_visit
-from schemas import RootSchema
-from utils import parse_raw_response
+from .prompts import prompt
+from .tools import file_save, ddgs_run, url_visit
+from .schemas import RootSchema
+from .utils import parse_raw_response
 
 load_dotenv()
 
