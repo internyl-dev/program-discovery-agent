@@ -1,8 +1,7 @@
-# Schema Instructions
+# Improved Schema Instructions
 
-The following is the instructions for writing information in the schema. Follow each of these instructions STRICTLY.
+You will fill information in the following JSON schema. Follow these instructions STRICTLY.
 
-This is the schema that you will put information in:
 ```json
 {
   "overview": {
@@ -13,7 +12,6 @@ This is the schema that you will put information in:
     "subject": [],
     "tags": []
   },
-
   "eligibility": {
     "requirements": {
       "essay_required": "not provided",
@@ -21,16 +19,14 @@ This is the schema that you will put information in:
       "transcript_required": "not provided",
       "other": []
     },
-
     "eligibility": {
       "grades": ["not provided"],
       "age": {
-        "minimum": "not provided",
-        "maximum": "not provided"
+        "minimum": null,
+        "maximum": null
       }
     }
   },
-
   "dates": {
     "deadlines": [
       {
@@ -42,7 +38,6 @@ This is the schema that you will put information in:
         "time": "not provided"
       }
     ],
-
     "dates": [
       {
         "term": "not provided",
@@ -50,10 +45,8 @@ This is the schema that you will put information in:
         "end": "not provided"
       }
     ],
-
     "duration_weeks": "not provided"
   },
-
   "locations": {
     "locations": [
       {
@@ -64,7 +57,6 @@ This is the schema that you will put information in:
       }
     ]
   },
-
   "costs": {
     "costs": [
       {
@@ -75,13 +67,11 @@ This is the schema that you will put information in:
         "financial_aid_available": "not provided"
       }
     ],
-
     "stipend": {
       "available": "not provided",
       "amount": "not provided"
     }
   },
-
   "contact": {
     "contact": {
       "email": "not provided",
@@ -91,118 +81,85 @@ This is the schema that you will put information in:
 }
 ```
 
-**Search when needed:** If critical information is missing from the provided content (deadlines, eligibility requirements, or costs), search using the format: "[program name] + [missing section]"
-- Example 1: To get the deadlines for the BRAINYAC program, query "brainyac deadline"  
-- Example 2: To get the dates for the Summer 2025 term for the ARISE program, query "arise summer 2025 dates"
+## MANDATORY SEARCH REQUIREMENT
 
-**If information is still not found after searching, use "not provided" rather than guessing.**
+**Before outputting JSON, you MUST search for ANY missing critical information:**
+- Application deadlines
+- Program costs/tuition 
+- Eligibility requirements (grades, age, application requirements)
+- Program dates (start/end dates)
+- Contact information
 
-—————
-## GLOBAL RULES:
-- **OUTPUT FORMAT**: You must return ONLY valid JSON in the exact schema format above. No additional text, explanations, or markdown formatting.
-- Do NOT infer, guess, or hallucinate information not explicitly stated in sources.
-- Use `"not provided"` (with quotes) for missing text fields or categories.
-- Use `null` for numeric fields that are not provided or when free is true.
-- Use `[]` (empty array) for missing array fields.
-- All string values must be in quotes, including "not provided".
+**Search format:** "[program name] + [missing info]"
+Examples: "brainyac deadline", "arise program cost", "stem program eligibility"
 
-—————
-## SECTION INSTRUCTIONS:
+## GLOBAL RULES
 
-### 1. OVERVIEW:
-- **"title"**: Use the full program name
-- **"provider"**: The organization running the program
-- **"description"**: A concise summary, directly quoted or reworded from mission/program overview
-- **"link"**: A direct URL to the program or application if provided (must be a complete URL starting with http/https)
-- **"subject"**: Array of stated academic topics (e.g., ["biology", "computer science"])
-  - It is acceptable for subjects to be derived from hiring skillsets or offered courses
-  - If no direct subject can be found, infer at least one subject based on the name or description
-  - If absolutely not clear, use ["various"]
-  - Must be an array even if only one subject
-- **"tags"**: Array of literal keywords (e.g., ["free", "residential", "virtual"])
-  - Must be an array even if only one tag
+**Output Process:**
+1. Extract available information
+2. Search for missing critical information
+3. Provide brief search explanation
+4. Output complete JSON
 
-### 2. ELIGIBILITY:
-- **"essay_required"**, **"recommendation_required"**, **"transcript_required"**: Use `true`, `false`, or `"not provided"`
-- **"other"**: Array of any extra requirements (e.g., ["An interview is required"])
-- **"grades"**: Convert stated grades into standard format:
-  - 9th grade → ["Freshman"]
-  - 10th grade → ["Sophomore"] 
-  - 11th grade → ["Junior"]
-  - 12th grade → ["Senior"]
-  - Grade ranges like "9-12" → ["Freshman", "Sophomore", "Junior", "Senior"]
-  - Use "Rising" only if explicitly stated (e.g., ["Rising Senior"])
-  - Must be an array even if only one grade
-- **"age"**: Fill "minimum" and "maximum" with numeric values only if exact ages are given
-  - For age ranges like "14-18", use minimum: 14, maximum: 18
-  - Use `null` if not provided, not `"not provided"`
-  - Never infer age from grade or vice versa
+**Data Types:**
+- **Strings:** `"not provided"` (with quotes)
+- **Numbers:** `null` for age fields, `"not provided"` for other numeric fields
+- **Booleans:** `true`/`false` or `"not provided"` when unclear
+- **Arrays:** `[]` when empty, must be arrays even for single items
 
-### 3. DATES:
-- **"deadlines"**: Array of deadline objects. For each deadline found, fill all subfields:
-  - **"name"**: Type of deadline (e.g., "Priority Deadline", "Final Application Deadline")
-  - **"priority"**: Use "high" for the final/most critical application deadline, "medium" for early/priority deadlines, "low" for optional deadlines
-  - **"term"**: Which program term the deadline applies to (e.g., "Summer 2025")
-  - **"date"**: Use format hierarchy: mm-dd-yyyy (e.g., "03-15-2025"), or mm-yyyy (e.g., "03-2025"), or yyyy (e.g., "2025")
-  - **"rolling_basis"**: `true` if rolling admissions, `false` if fixed deadline, `"not provided"` if unclear
-  - **"time"**: Include if provided (e.g., "11:59 PM EST")
-- **"dates"**: Array of program date objects
-  - Include only if both start and end dates are provided
-  - Use same date format hierarchy as deadlines
-  - If year isn't provided, assume current year (2025)
-- **"duration_weeks"**: Use numeric value only if clearly stated (e.g., 6 for "6-week program")
-  - Use `"not provided"` if not explicitly stated
-  - Never derive from vague phrases like "a few weeks"
+**No inference rule:** Do not guess or hallucinate information not in sources (Exception: subject field only)
 
-### 4. LOCATIONS:
-- **"virtual"**: Use exact values:
-  - `true` — if program is explicitly online only (when true, set state/city/address to "not provided")
-  - `false` — if explicitly in-person only
-  - `"hybrid"` — if program combines online and in-person in one experience
-  - `"both available"` — if users can choose between online or in-person versions
-  - `"not provided"` — if unclear
-- **"state"**, **"city"**, **"address"**: Only fill if explicitly stated and virtual is not true
-  - Do not infer location based on provider, university, or assumptions
-  - Use full state names, not abbreviations (e.g., "New York" not "NY")
+## FIELD INSTRUCTIONS
 
-### 5. COSTS:
-Create separate cost objects for each distinct cost type mentioned:
-- **"name"**: Label of the cost (e.g., "Tuition", "Housing", "Program Fee")
-- **"free"**: Use `true` only if clearly stated as free/no cost
-  - If `true`, both "lowest" and "highest" must be `null`
-- **"lowest"**/**"highest"**: Use numeric values only (e.g., 2500 for $2500)
-  - For single amounts, put the same value in both fields
-  - For ranges like "$2000-$3000", use lowest: 2000, highest: 3000
-  - Use `null` if not provided or if free is true
-  - Do not include currency symbols or commas
-- **"financial_aid_available"**: `true`, `false`, or `"not provided"`
+### OVERVIEW
+- **title:** Full program name
+- **provider:** Organization running the program  
+- **description:** Concise summary from program materials
+- **link:** Complete URL (http/https) or "not provided"
+- **subject:** Academic topics as stated OR inferred from program name/description. Use ["various"] if unclear
+- **tags:** Literal keywords from content (e.g., ["free", "residential", "virtual"])
 
-**Stipend:**
-- **"available"**: `true` if explicitly mentioned, `false` if explicitly absent, `"not provided"` if unclear
-- **"amount"**: Numeric value only if stated, `null` if not provided or if available is false
+### ELIGIBILITY
+- **requirements:** Use `true`/`false` for essay/recommendation/transcript, or `"not provided"`
+- **other:** Array of additional requirements
+- **grades:** Convert to standard format:
+  - 9th→["Freshman"], 10th→["Sophomore"], 11th→["Junior"], 12th→["Senior"]  
+  - Ranges: "9-12"→["Freshman","Sophomore","Junior","Senior"]
+  - Non-standard: Copy exactly as written
+- **age:** Use exact numbers only. For "14-18": minimum:14, maximum:18. Use `null` if not provided
 
-### 6. CONTACT:
-Include only program-specific contact information found directly in the main content:
-- **"email"**: Must be a complete, valid email address found directly in content
-- **"phone"**: Must be a complete phone number (e.g., "123-456-7890" or "(123) 456-7890")
-- Never extract from headers, footers, or general university contact info unless clearly program-specific
-- Use `"not provided"` if not explicitly present in main content
+### DATES
+- **deadlines:** Create objects for each deadline found:
+  - **priority:** "high"=final deadline, "medium"=early/priority, "low"=optional
+  - **date:** mm-dd-yyyy preferred, mm-yyyy or yyyy acceptable
+  - **rolling_basis:** `true`/`false`/`"not provided"`
+- **dates:** Program start/end dates (same format as deadlines)
+- **duration_weeks:** Numeric value only if explicitly stated (e.g., "6-week program"→"6")
 
-—————
-## DATA TYPE REQUIREMENTS:
-- Strings: Always use double quotes
-- Numbers: No quotes (e.g., `2500`, not `"2500"`)
-- Booleans: No quotes (e.g., `true`, `false`)
-- Arrays: Use `[]` even if empty
-- Null values: Use `null` (no quotes)
-- Missing text: Use `"not provided"` (with quotes)
+### LOCATIONS
+- **virtual:** 
+  - `true` = online only (set state/city/address to "not provided")
+  - `false` = in-person only  
+  - `"hybrid"` = combines online and in-person
+  - `"both available"` = choice between online or in-person versions
+  - `"not provided"` = unclear
+- Create separate location objects for multiple locations
+- **state:** Full names only (e.g., "New York" not "NY")
 
-## FINAL VALIDATION:
-Before outputting, verify:
-1. ✅ Valid JSON syntax (proper quotes, commas, brackets)
-2. ✅ All required fields present (no missing schema sections)
-3. ✅ Correct data types (strings quoted, numbers unquoted, etc.)
-4. ✅ Arrays used for all array fields (even single items)
-5. ✅ No explanatory text outside the JSON structure
+### COSTS
+- **free:** `true` only if explicitly free (then lowest/highest must be `null`)
+- **lowest/highest:** Numeric values only, no currency symbols
+- **financial_aid_available:** `true`/`false`/`"not provided"`
 
-**Remember: Output ONLY the JSON. No additional text before or after.**
+### CONTACT
+- **email:** Complete, valid email addresses from program content
+- **phone:** Complete phone numbers from program content
+- Extract from main content first, then headers/footers only if program-specific
+
+## VALIDATION CHECKLIST
+Before outputting:
+✅ Valid JSON syntax  
+✅ All schema fields present  
+✅ Correct data types (strings quoted, numbers unquoted)  
+✅ Arrays used for all array fields  
+✅ Critical information searched if missing
