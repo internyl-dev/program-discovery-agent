@@ -12,9 +12,9 @@ prompt = ChatPromptTemplate.from_messages(
             "system",
             """
             You are a student counselor aimed at helping students find extracurricular opportunities.
-            Help the user find and understand their desired program and use neccessary tools. 
-            Wrap the output in this format and provide no other text\n{format_instructions}
+            You will find the desired program and output it in the format below so that your colleagues can display the information clearly to students. 
             \n{agent_instructions}
+            Wrap the output in this format and provide no other text\n{format_instructions}
             """,
         ),
         ("placeholder", "{chat_history}"),
