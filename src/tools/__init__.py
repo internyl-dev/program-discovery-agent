@@ -1,20 +1,35 @@
-from langchain_community.tools import WikipediaQueryRun, DuckDuckGoSearchRun
-from langchain_community.utilities import WikipediaAPIWrapper
+
 from langchain.tools import Tool
 
-from .save_tool import save_to_txt
-from.search_tool import search
+from .file_save import save_to_txt
+from .ddgs_run import DuckDuckGoSearchRun
+from .url_visit import WebScraper
 
-save_tool = Tool(
+file_save = Tool(
     name="save_text_to_file",
     func=save_to_txt,
-    description="Saves structured research data to a text file.",
+    description="Saves structured research data to a text file."
 )
 
-search_tool = Tool(
+ddgs_run = Tool(
     name="search",
-    func=search.run,
-    description="Search the web for information",
+    func=DuckDuckGoSearchRun,
+    description=(
+    "Use this tool to search the web for information.\n"
+    "Parameters:\n"
+    " - query (str): The search term or question.\n"
+    " - max_results (int, optional): The number of results to return (default 5)."
+    )
+)
+
+url_visit = Tool(
+    name="visit_url",
+    func=WebScraper().run,
+    description=(
+    "Use this tool to extract the information from a website.\n"
+    "Parameters:\n"
+    " - url (str): The url to extract the contents from."
+    )
 )
 
 print("Tools initialized")
