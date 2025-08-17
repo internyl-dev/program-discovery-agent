@@ -1,15 +1,15 @@
 
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import PydanticOutputParser
 
 from .assets.prompts import PROMPTS
-from ..utils import ResponseParser
+from ..schemas import schemas
 
 class PromptCreator:
-    def __init__(self, section:str):
-        self.agent_instructions = PROMPTS[section]
-        self.parser = ResponseParser(section).parser
 
-    def create_chat_prompt_template(self):
+    def create_chat_prompt_template(self, section:str):
+        agent_instructions = PROMPTS[section]
+        parser = PydanticOutputParser(pydantic_object=schemas[section])
         prompt = ChatPromptTemplate.from_messages(
             [
                 (
@@ -26,4 +26,6 @@ class PromptCreator:
                 ("human", "{query}"),
                 ("placeholder", "{agent_scratchpad}"),
             ]
-        ).partial(format_instructions=self.parser.get_format_instructions(), agent_instructions=self.agent_instructions)
+        ).partial(format_instructions=parser.get_format_instructions(), agent_instructions=agent_instructions)
+
+        return prompt

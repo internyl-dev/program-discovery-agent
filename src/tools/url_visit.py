@@ -83,7 +83,7 @@ class WebScraper:
     def run(self, url:str):
         raw_html = asyncio.run(self.scrape_html(url))
         soup = BeautifulSoup(raw_html, features='html.parser')
-        soup = self.declutter_html(soup)
+        #soup = self.declutter_html(soup)
         contents = self.clean_whitespace(soup)
 
         return contents

@@ -1,2 +1,2 @@
 
-from .prompt_create import prompt
+from .prompt_create import PromptCreator

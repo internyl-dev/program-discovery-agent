@@ -43,6 +43,11 @@ SCHEMA:
 
 {REPEAT_INSTRUCTIONS}
 
+ADDITIONAL SEARCH INSTRUCTIONS:
+For eligiblity specifically, search for the form where you apply for the program and look through the requirements.
+Also search for requirements like essays with double quotes around the search term to return search results always including the search term.
+Eg. 'brainyac rutgers "recommendation"' returns results that have to have the word "recommendation" in the contents.
+
 Fill:
 - "essay_required", "recommendation_required", "transcript_required": Use true, false, or "not provided".
 - "other": List any extra requirements mentioned like "An interview is required" or "A portfolio is required".

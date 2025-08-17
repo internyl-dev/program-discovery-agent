@@ -3,9 +3,9 @@ from dotenv import load_dotenv
 from langchain_openai import AzureChatOpenAI
 from langchain.agents import create_tool_calling_agent, AgentExecutor
 
-from .prompts import prompt
+from .firebase import FirebaseClient
+from .prompts import PromptCreator
 from .tools import file_save, ddgs_run, url_visit
-from .schemas import RootSchema
 from .utils import ResponseParser
 
 load_dotenv()
@@ -19,6 +19,8 @@ llm = AzureChatOpenAI(
     max_retries=2
     )
 
+prompt = PromptCreator().create_chat_prompt_template("eligibility")
+
 tools = [file_save, ddgs_run, url_visit]
 agent = create_tool_calling_agent(
     llm=llm,
@@ -27,7 +29,11 @@ agent = create_tool_calling_agent(
 )
 
 agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
-query = input("What extracurricular program are you looking for?\n")
+
+firebase = FirebaseClient()
+document = firebase.read_documents("internships-history")[0]
+
+query = document
 raw_response = agent_executor.invoke({"query": query})
 
-parse_raw_response(raw_response)
+ResponseParser().parse_raw_response(raw_response, "eligibility")

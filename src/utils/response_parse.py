@@ -5,10 +5,9 @@ from pprint import pp
 from ..schemas import schemas
 
 class ResponseParser:
-    def __init__(self, section:str):
-        self.parser = PydanticOutputParser(pydantic_object=schemas[section])
 
-    def parse_raw_response(self, raw_response):
+    def parse_raw_response(self, raw_response, section:str):
+        parser = PydanticOutputParser(pydantic_object=schemas[section])
         try:
             # The output is already a string, not a list with a text field
             raw_output = raw_response.get("output")
