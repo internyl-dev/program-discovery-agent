@@ -1,24 +1,29 @@
 
 from langchain_core.prompts import ChatPromptTemplate
 
-from ..utils import parser
+from .assets.prompts import PROMPTS
+from ..utils import ResponseParser
 
-with open("src/prompts/agent_instructions.txt", encoding="utf-8", mode='r') as file:
-    agent_instructions = file.read()
+class PromptCreator:
+    def __init__(self, section:str):
+        self.agent_instructions = PROMPTS[section]
+        self.parser = ResponseParser(section).parser
 
-prompt = ChatPromptTemplate.from_messages(
-    [
-        (
-            "system",
-            """
-            You are a student counselor aimed at helping students find extracurricular opportunities.
-            You will find the desired program and output it in the format below so that your colleagues can display the information clearly to students. 
-            \n{agent_instructions}
-            Wrap the output in this format and provide no other text\n{format_instructions}
-            """,
-        ),
-        ("placeholder", "{chat_history}"),
-        ("human", "{query}"),
-        ("placeholder", "{agent_scratchpad}"),
-    ]
-).partial(format_instructions=parser.get_format_instructions(), agent_instructions=agent_instructions)
+    def create_chat_prompt_template(self):
+        prompt = ChatPromptTemplate.from_messages(
+            [
+                (
+                    "system",
+                    """
+                    You will be given a partially filled JSON object.
+                    Your job is to search for information to completely populate the schema.
+                    The schema and search instructions will be given below:
+                    \n{agent_instructions}
+                    Wrap the output in this format and provide no other text\n{format_instructions}
+                    """,
+                ),
+                ("placeholder", "{chat_history}"),
+                ("human", "{query}"),
+                ("placeholder", "{agent_scratchpad}"),
+            ]
+        ).partial(format_instructions=self.parser.get_format_instructions(), agent_instructions=self.agent_instructions)

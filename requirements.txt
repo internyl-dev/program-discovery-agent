@@ -7,3 +7,4 @@ pydantic
 ddgs
 playwright
 bs4
+firebase_admin
