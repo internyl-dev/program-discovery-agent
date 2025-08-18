@@ -11,15 +11,19 @@ SEARCH INSTRUCTIONS:
 You will be responsible yourself to think of ways to find the information with the tools given to you.
 If you are stuck however, the following tips are a starting point to get the information that is needed.
 Get started by searching: "[title of program] [program provider] [missing section name]" (with underscores and dashes replaced by spaces to get the most search results)
+It is generally a good idea to look through a program's FAQ if certain information cannot be found.
 
 Core rules:
 - Do NOT change the structure of the given schema.
+- Assume that the information already entered into the schema is true, therefore there is no need to validate it. 
+You can change the information that is already in the schema only if contradictory information is found but don't actively search for it.
 """
 
 PROMPTS = {
     "overview": f"""
 SCHEMA:
-"overview": {SCHEMA["overview"]}
+{SCHEMA["overview"]}
+RETURN THE SCHEMA IN THIS EXACT STRUCTURE
 
 {REPEAT_INSTRUCTIONS}
 
@@ -39,12 +43,16 @@ In the schema there may be a "link" key; that is only for the program, so don't 
 
     "eligibility": f"""
 SCHEMA:
-"eligibility": {SCHEMA["eligibility"]}
+{SCHEMA["eligibility"]}
+RETURN THE SCHEMA IN THIS EXACT STRUCTURE
 
 {REPEAT_INSTRUCTIONS}
 
 ADDITIONAL SEARCH INSTRUCTIONS:
-For eligiblity specifically, search for the form where you apply for the program and look through the requirements.
+For eligiblity specifically, search for the form where you apply for the program by querying and look through the requirements.
+Shown below is an example to find the form to apply but please note that finding the form is not limited to the example:
+- query "[program name] [program provider] apply" and find the link that most likely leads to the form. If none of them lead to the form, get all the links from within the link.
+Sometimes the form won't be traversal by an AI due to being split in sections where one has to be completed to move on to the next. In this scenario, find and go through the FAQ.
 Also search for requirements like essays with double quotes around the search term to return search results always including the search term.
 Eg. 'brainyac rutgers "recommendation"' returns results that have to have the word "recommendation" in the contents.
 
@@ -61,7 +69,8 @@ Be literal and precise — convert 9th, 10th, 11th, and 12th grade to freshman, 
 
     "dates": f"""
 SCHEMA:
-"dates": {SCHEMA["dates"]}
+{SCHEMA["dates"]}
+RETURN THE SCHEMA IN THIS EXACT STRUCTURE
 
 {REPEAT_INSTRUCTIONS}
 
@@ -86,12 +95,14 @@ Do not infer dates or duration from vague phrases or context.
 
     "locations": f"""
 SCHEMA:
-"locations": {SCHEMA["locations"]}
+{SCHEMA["locations"]}
+RETURN THE SCHEMA IN THIS EXACT STRUCTURE
 
 {REPEAT_INSTRUCTIONS}
 
 Fill:
 - "virtual": true if clearly online, false if clearly in-person, "hybrid" if both, "both available" if both are available, "not provided" if unclear.
+  - If virtual is stated to be true, there is no need to search for information about the locations including the state, city, or address.
 - "state", "city", "address": Use only if directly stated.
 
 Include only the main residential/instructional site — ignore travel destinations or event locations.
@@ -101,7 +112,8 @@ Include only the main residential/instructional site — ignore travel destinati
 
     "costs": f"""
 SCHEMA:
-"costs": {SCHEMA["costs"]}
+{SCHEMA["costs"]}
+RETURN THE SCHEMA IN THIS EXACT STRUCTURE
 
 {REPEAT_INSTRUCTIONS}
 
@@ -121,13 +133,13 @@ Include each cost type as a separate object if multiple are mentioned.
 
     "contact": f"""
 SCHEMA:
-"contact": {SCHEMA["contact"]}
+{SCHEMA["contact"]}
+RETURN THE SCHEMA IN THIS EXACT STRUCTURE
 
 {REPEAT_INSTRUCTIONS}
 
 Core rules:
 - Only include contact info shown directly in the webpage content.
-- Do not infer or assume from context or page layout.
 - Leave fields as "not provided" if missing.
 - Only include the most important contact to an applicant.
 

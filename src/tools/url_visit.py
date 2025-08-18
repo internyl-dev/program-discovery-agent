@@ -80,10 +80,11 @@ class WebScraper:
 
         return contents
 
-    def run(self, url:str):
+    def run(self, url:str, declutter:bool=False):
         raw_html = asyncio.run(self.scrape_html(url))
         soup = BeautifulSoup(raw_html, features='html.parser')
-        #soup = self.declutter_html(soup)
+        if declutter:
+            soup = self.declutter_html(soup)
         contents = self.clean_whitespace(soup)
 
         return contents

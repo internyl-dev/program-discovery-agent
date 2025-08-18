@@ -1,15 +1,9 @@
 
 from langchain.tools import Tool
 
-from .file_save import save_to_txt
 from .ddgs_run import DuckDuckGoSearchRun
 from .url_visit import WebScraper
-
-file_save = Tool(
-    name="save_text_to_file",
-    func=save_to_txt,
-    description="Saves structured research data to a text file."
-)
+from .links_scrape import LinkScraper
 
 ddgs_run = Tool(
     name="search",
@@ -29,6 +23,16 @@ url_visit = Tool(
     "Use this tool to extract the information from a website.\n"
     "Parameters:\n"
     " - url (str): The url to extract the contents from."
+    )
+)
+
+links_scrape = Tool(
+    name="get_all_links",
+    func=LinkScraper().run,
+    description=(
+    "Use this tool to extract all links from within a website.\n"
+    "Parameters:\n"
+    " - url (str): The url to extract the links from."
     )
 )
 
