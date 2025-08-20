@@ -4,7 +4,7 @@ import asyncio
 from playwright.async_api import async_playwright
 from bs4 import BeautifulSoup
 
-class WebScraper:
+class ContentScraper:
     @staticmethod
     async def scrape_html(url):
         """

@@ -1,5 +1,5 @@
 
-from .documents_read import FirebaseReadClient
+from .document_reader import FirebaseReadClient
 
 class FirebaseAddClient(FirebaseReadClient):
 

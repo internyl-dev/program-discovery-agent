@@ -3,9 +3,9 @@ import re
 import asyncio
 from bs4 import BeautifulSoup
 
-from .url_visit import WebScraper
+from .content_scraper import ContentScraper
 
-class LinkScraper(WebScraper):
+class LinkScraper(ContentScraper):
 
     def __init__(self):
         super().__init__()

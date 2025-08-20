@@ -2,8 +2,8 @@
 from langchain.tools import Tool
 
 from .ddgs_run import DuckDuckGoSearchRun
-from .url_visit import WebScraper
-from .links_scrape import LinkScraper
+from .content_scraper import ContentScraper
+from .links_scraper import LinkScraper
 
 ddgs_run = Tool(
     name="search",
@@ -16,9 +16,9 @@ ddgs_run = Tool(
     )
 )
 
-url_visit = Tool(
+content_scraper = Tool(
     name="visit_url",
-    func=WebScraper().run,
+    func=ContentScraper().run,
     description=(
     "Use this tool to extract the information from a website.\n"
     "Parameters:\n"
@@ -26,7 +26,7 @@ url_visit = Tool(
     )
 )
 
-links_scrape = Tool(
+links_scraper = Tool(
     name="get_all_links",
     func=LinkScraper().run,
     description=(

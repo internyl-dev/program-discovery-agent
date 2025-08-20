@@ -7,8 +7,8 @@ from langchain.agents import create_tool_calling_agent, AgentExecutor
 
 from .firebase import FirebaseClient
 from .prompts import PromptCreator
-from .tools import ddgs_run, url_visit, links_scrape
-from .utils import ResponseParser, denest_dict
+from .tools import ddgs_run, content_scraper, links_scraper
+from .utils import ResponseParser, denest_dict, callbacks, logger
 
 load_dotenv()
 
@@ -25,6 +25,7 @@ collection_to_read = "internships-history"
 collection_to_add = "programs-display"
 
 firebase = FirebaseClient()
+
 documents = firebase.read_documents(collection_to_read)
 document = list(documents.values())[0]
 new_document = copy.deepcopy(document)
@@ -34,11 +35,11 @@ for section in ["overview", "eligibility", "dates", "locations", "costs", "conta
     _denested_dict = denest_dict(new_document[section])
 
     if not any((_denested_dict[key] == "not provided") for key in _denested_dict):
-        print(f"Skipped {section}")
+        logger.info(f"Skipped {section}")
         continue
 
     prompt = PromptCreator().create_chat_prompt_template(section)
-    tools = [ddgs_run, url_visit, links_scrape]
+    tools = [ddgs_run, content_scraper, links_scraper]
     agent = create_tool_calling_agent(
         llm=llm,
         prompt=prompt,
@@ -47,15 +48,15 @@ for section in ["overview", "eligibility", "dates", "locations", "costs", "conta
 
     agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
     query = new_document
-    raw_response = agent_executor.invoke({"query": query})
+    raw_response = agent_executor.invoke({"query": query}, config={"callbacks": callbacks})
 
     try:
         new_document[section] = ResponseParser().parse_raw_response(raw_response, section)
     except Exception as e:
         pp(e)
 
-firebase.delete_document(collection_to_read, list(documents.keys())[0])
 firebase.add_indexed_document(collection_to_add, new_document)
+firebase.delete_document(collection_to_read, list(documents.keys())[0])
 
 print('\n\n\n')
 pp(document)

@@ -1,3 +1,8 @@
 
-from .response_parse import ResponseParser
-from .dict_denest import denest_dict
+from .response_parser import ResponseParser
+from .dict_denester import denest_dict
+from .callback_handler import LangChainLoggingHandler
+
+handler = LangChainLoggingHandler(log_mode=False)
+callbacks = [handler]
+logger = handler.logger

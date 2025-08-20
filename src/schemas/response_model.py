@@ -83,7 +83,7 @@ class Cost(BaseModel):
 
 class Stipend(BaseModel):
     available: OptionalBool
-    amount: OptionalFloat
+    amount: float | str
 
 class Costs(BaseModel):
     costs: list[Cost]

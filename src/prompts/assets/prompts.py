@@ -103,7 +103,9 @@ RETURN THE SCHEMA IN THIS EXACT STRUCTURE
 Fill:
 - "virtual": true if clearly online, false if clearly in-person, "hybrid" if both, "both available" if both are available, "not provided" if unclear.
   - If virtual is stated to be true, there is no need to search for information about the locations including the state, city, or address.
-- "state", "city", "address": Use only if directly stated.
+- "state": one of the 50 states of the United States where the program is located
+- "city": city in the state where the program is located
+- "address": address to the location of the program
 
 Include only the main residential/instructional site — ignore travel destinations or event locations.
 """,
@@ -125,6 +127,8 @@ Cost objects (tuition, fees, etc.):
 Stipend:
 - "available": true only if explicitly mentioned, false if clearly absent.
 - "amount": Use number if stated. If "available" is false, set to null.
+  - If rate is given, for example hourly or per session, write the amount and the rate (eg. 16.50 per hour, 200 per week, 100 per session)
+  - If the amount for the entire program can be calculated explicitly given the rate and amount of sessions, calculate that and return it (eg. 100 per session, 7 sessions -> 700)
 
 Include each cost type as a separate object if multiple are mentioned.
 """,

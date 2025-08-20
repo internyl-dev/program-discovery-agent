@@ -1,6 +1,6 @@
 
-from .documents_add import FirebaseAddClient
-from .documents_delete import FirebaseDeleteClient
+from .document_uploader import FirebaseAddClient
+from .document_remover import FirebaseDeleteClient
 
 class FirebaseClient(FirebaseAddClient, FirebaseDeleteClient):
     
