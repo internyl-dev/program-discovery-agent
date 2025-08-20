@@ -21,8 +21,12 @@ llm = AzureChatOpenAI(
     max_retries=2
     )
 
+collection_to_read = "internships-history"
+collection_to_add = "programs-display"
+
 firebase = FirebaseClient()
-document = firebase.read_documents("internships-history")[2]
+documents = firebase.read_documents(collection_to_read)
+document = list(documents.values())[0]
 new_document = copy.deepcopy(document)
 
 for section in ["overview", "eligibility", "dates", "locations", "costs", "contact"]:
@@ -49,6 +53,9 @@ for section in ["overview", "eligibility", "dates", "locations", "costs", "conta
         new_document[section] = ResponseParser().parse_raw_response(raw_response, section)
     except Exception as e:
         pp(e)
+
+firebase.delete_document(collection_to_read, list(documents.keys())[0])
+firebase.add_indexed_document(collection_to_add, new_document)
 
 print('\n\n\n')
 pp(document)

@@ -20,8 +20,11 @@ class FirebaseReadClient:
         collection_ref = self.database.collection(collection_name)
         documents = collection_ref.stream()
 
-        return [(document.to_dict()) for document in documents]
+        return {document.id: document.to_dict() for document in documents}
 
     def read_document(self, collection_name:str, document_id:str):
         collection_ref = self.database.collection(collection_name)
         document_ref = collection_ref.document(document_id)
+        snapshot = document_ref.get()
+
+        return snapshot.to_dict()
