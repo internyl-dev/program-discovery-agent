@@ -1,8 +1,6 @@
 
 from .document_uploader import FirebaseAddClient
 from .document_remover import FirebaseDeleteClient
-from .pprint import pp
-
 class FirebaseClient(FirebaseAddClient, FirebaseDeleteClient):
     
     def __init__(self):
