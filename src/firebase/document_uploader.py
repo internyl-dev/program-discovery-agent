@@ -5,6 +5,11 @@ class FirebaseAddClient(FirebaseReadClient):
 
     def __init__(self):
         super().__init__()
+
+    def add_document(self, collection_name:str, document:dict, id:str):
+        collection_ref = self.database.collection(collection_name)
+
+        collection_ref.document(id).set(document)
     
     def add_indexed_document(self, collection_name:str, document:dict):
         collection_ref = self.database.collection(collection_name)

@@ -2,22 +2,22 @@
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import PydanticOutputParser
 
-from .assets.prompts import PROMPTS
-from ..schemas import schemas
+from .assets.prompt import PROMPT
+from ..schemas import Output
 
 class PromptCreator:
 
-    def create_chat_prompt_template(self, section:str):
-        agent_instructions = PROMPTS[section]
-        parser = PydanticOutputParser(pydantic_object=schemas[section])
+    def create_chat_prompt_template(self):
+        agent_instructions = PROMPT
+        parser = PydanticOutputParser(pydantic_object=Output)
         prompt = ChatPromptTemplate.from_messages(
             [
                 (
                     "system",
                     """
-                    You will be given a partially filled JSON object.
-                    Your job is to search for information to completely populate the schema.
-                    The schema and search instructions will be given below:
+                    You will be given a dictionary of information for extracurricular programs.
+                    Your job is to search for more extracurricular programs, not returning the programs already given.
+                    The instructions will be given below:
                     \n{agent_instructions}
                     Wrap the output in this format and provide no other text\n{format_instructions}
                     """,

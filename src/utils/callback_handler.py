@@ -9,11 +9,14 @@ class LangChainLoggingHandler(BaseCallbackHandler, Logger):
         Logger.__init__(self, log_mode)
 
     def on_chain_start(self, serialized: Dict[str, Any], inputs: Dict[str, Any], **kwargs) -> None:
-        chain_name = serialized.get('name') if serialized else 'Unknown'
-        self.langchain_logger.info(f"Chain {chain_name} started")
+        #chain_name = serialized.get('name') if serialized else 'Unknown'
+        #self.langchain_logger.info(f"Chain {chain_name} started")
+        pass
     
     def on_chain_end(self, outputs: Dict[str, Any], **kwargs) -> None:
-        self.langchain_logger.info(f"Chain ended, outputs: {outputs}")
+        #self.langchain_logger.info(f"Chain ended, outputs: {outputs}")
+        pass
 
     def on_text(self, text: str, **kwargs) -> None:
-        self.langchain_logger.info(text)
+        #self.langchain_logger.info(text)
+        pass

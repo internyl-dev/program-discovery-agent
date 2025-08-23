@@ -1,6 +1,7 @@
 
 from .document_uploader import FirebaseAddClient
 from .document_remover import FirebaseDeleteClient
+
 class FirebaseClient(FirebaseAddClient, FirebaseDeleteClient):
     
     def __init__(self):
@@ -25,6 +26,7 @@ class FirebaseClient(FirebaseAddClient, FirebaseDeleteClient):
 
             i+=1
 
+firebase = FirebaseClient()
 
 if __name__ == "__main__":
 
