@@ -1,6 +1,4 @@
-
 import re
-import asyncio
 from bs4 import BeautifulSoup
 
 from .content_scraper import ContentScraper
@@ -59,11 +57,10 @@ class LinkScraper(ContentScraper):
             except Exception: 
                 continue
 
-
         return new_links
     
     def run(self, url):
         soup = BeautifulSoup(
-            asyncio.run(self.scrape_html(url)), 
+            self.scrape_html(url), 
             features="html.parser")
         return self.scrape_all_links(soup, url)

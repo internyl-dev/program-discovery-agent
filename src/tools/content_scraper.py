@@ -1,12 +1,11 @@
 
 import re
-import asyncio
-from playwright.async_api import async_playwright
+from playwright.sync_api import sync_playwright
 from bs4 import BeautifulSoup
 
 class ContentScraper:
     @staticmethod
-    async def scrape_html(url):
+    def scrape_html(url):
         """
         Sends URL to Playwright to extract HTML contents.
 
@@ -16,14 +15,15 @@ class ContentScraper:
         Returns:
             html_contents (str): The contents of the HTML of the target website
         """
+        browser = None
         try:
-            async with async_playwright() as p:
-                browser = await p.chromium.launch(headless=True)
-                context = await browser.new_context(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0 Safari/537.36")
-                page = await context.new_page()
-                await page.goto(url)
-                html = await page.evaluate('document.body.innerHTML')
-                await browser.close()
+            with sync_playwright() as p:
+                browser = p.chromium.launch(headless=True)
+                context = browser.new_context(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0 Safari/537.36")
+                page = context.new_page()
+                page.goto(url)
+                html = page.evaluate('document.body.innerHTML')
+                browser.close()
                 return html
             
         except Exception as e:
@@ -81,7 +81,7 @@ class ContentScraper:
         return contents
 
     def run(self, url:str, declutter:bool=False):
-        raw_html = asyncio.run(self.scrape_html(url))
+        raw_html = self.scrape_html(url)
         soup = BeautifulSoup(raw_html, features='html.parser')
         if declutter:
             soup = self.declutter_html(soup)

@@ -3,10 +3,10 @@ import logging
 import datetime
 import os
 import sys
-from pprint import pp
+from pprint import pp, pprint
 
 class Logger:
-    def __init__(self, log_mode=True):
+    def __init__(self, log_mode):
 
         self.LOGS_DIR_PATH = "logs"
 
@@ -14,8 +14,6 @@ class Logger:
 
         self.logger = logging.getLogger('Internyl')
         self.logger.setLevel(logging.DEBUG)
-
-        self.setup_logging_main()
 
     def create_logging_files(self):
         """
@@ -43,11 +41,6 @@ class Logger:
         if not self.logger.handlers:
             formatter = logging.Formatter('[%(asctime)s] %(levelname)s: %(message)s')
 
-            # Stream handler
-            stream = logging.StreamHandler()
-            stream.setLevel(logging.DEBUG)
-            stream.setFormatter(formatter)
-
             # Debug file handler
             debug_file_handler=logging.FileHandler(f"{current_dir_path}/debug.txt")
             debug_file_handler.setLevel(logging.DEBUG)
@@ -58,19 +51,11 @@ class Logger:
             warning_file_handler.setLevel(logging.WARNING)
             warning_file_handler.setFormatter(formatter)
 
-            # Langchain file handler
-            langchain_file_handler=logging.FileHandler(f"{current_dir_path}/agent_verbose.txt")
-            langchain_file_handler.setLevel(logging.INFO)
-            langchain_file_handler.setFormatter(formatter)
-
-            # Langchain logger
-            self.langchain_logger = logging.getLogger("langchain")
-
             self.logger.addHandler(debug_file_handler)
             self.logger.addHandler(warning_file_handler)
-            self.logger.addHandler(stream)
 
-            self.langchain_logger.addHandler(langchain_file_handler)
+        # API Log
+        self.api_log = open(f"{current_dir_path}/api_transaction.txt", 'a')
 
     def apply_conditional_logging(self):
         """
@@ -80,7 +65,7 @@ class Logger:
         if not hasattr(self, 'logger'):
             return
             
-        def log_mode_guard(func):
+        def __log_mode_guard(func):
             def wrapper(*args, **kwargs):
                 if not self.log_mode:
                     return
@@ -92,18 +77,32 @@ class Logger:
                     message = args[0]
 
                 func(message)
+                pprint(message)
+                print()
                 return
                 
             return wrapper
 
-        self.logger.debug = log_mode_guard(self.logger.debug)
-        self.logger.info = log_mode_guard(self.logger.info)
-        self.logger.warning = log_mode_guard(self.logger.warning)
-        self.logger.error = log_mode_guard(self.logger.error)
-        self.logger.critical = log_mode_guard(self.logger.critical)
+        self.logger.debug = __log_mode_guard(self.logger.debug)
+        self.logger.info = __log_mode_guard(self.logger.info)
+        self.logger.warning = __log_mode_guard(self.logger.warning)
+        self.logger.error = __log_mode_guard(self.logger.error)
+        self.logger.critical = __log_mode_guard(self.logger.critical)
 
-    def setup_logging_main(self):
-        self.create_logging_files()
-        print("Set up logging files")
-        self.apply_conditional_logging()
-        print("Applied conditional logging")
+    def update(self, *args, level=None):
+        def __iterlog(method):
+            for msg in args:
+                method(msg)
+
+        if not level:
+            __iterlog(self.logger.info)
+        elif level==logging.DEBUG:
+            __iterlog(self.logger.debug)
+        elif level==logging.INFO:
+            __iterlog(self.logger.info)
+        elif level==logging.WARNING:
+            __iterlog(self.logger.warning)
+        elif level==logging.ERROR:
+            __iterlog(self.logger.error)
+        elif level==logging.CRITICAL:
+            __iterlog(self.logger.critical)

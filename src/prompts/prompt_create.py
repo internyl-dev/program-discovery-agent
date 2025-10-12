@@ -3,7 +3,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import PydanticOutputParser
 
 from .assets.prompt import PROMPT
-from ..schemas import Output
+from ..models import Output
 
 class PromptCreator:
 
