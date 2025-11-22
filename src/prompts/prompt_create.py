@@ -1,15 +1,17 @@
 
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import PydanticOutputParser
+from pydantic import BaseModel
 
 from .assets.prompt import PROMPT
 from ..models import Output
 
 class PromptCreator:
-
-    def create_chat_prompt_template(self):
-        agent_instructions = PROMPT
-        parser = PydanticOutputParser(pydantic_object=Output)
+    @staticmethod
+    def create_chat_prompt_template(instructions:str=PROMPT, output_model:BaseModel=Output) -> ChatPromptTemplate:
+        """Creates a `ChatPromptTemplate` object given some agent instructions and an output model"""
+        agent_instructions = instructions
+        parser = PydanticOutputParser(pydantic_object=output_model)
         prompt = ChatPromptTemplate.from_messages(
             [
                 (
