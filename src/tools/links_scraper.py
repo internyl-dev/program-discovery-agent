@@ -9,13 +9,14 @@ class LinkScraper(ContentScraper):
         super().__init__()
 
     @staticmethod
-    def is_link(s):
+    def is_link(s) -> bool:
+        """Returns true if a string is a valid base_url"""
         if '#' in s:
             return False
         
         pattern = re.compile(
             r'^('
-            r'https?://[\w.-]+\.[a-zA-Z]{2,}(/[^\s]*)?'  # full URL
+            r'https?://[\w.-]+\.[a-zA-Z]{2,}(/[^\s]*)?'  # full base_url
             r'|'
             r'//[\w.-]+\.[a-zA-Z]{2,}(/[^\s]*)?'         # scheme-relative
             r'|'
@@ -27,19 +28,21 @@ class LinkScraper(ContentScraper):
         return bool(pattern.match(s))
     
     @staticmethod
-    def process_link(url:str, href:str):
+    def process_link(base_url:str, href:str) -> str:
+        """Returns a valid base_url given a base base_url and a target HREF"""
         if href[0] == '/':
-            return '/'.join(url.split('/')[0:3]) + href
+            return '/'.join(base_url.split('/')[0:3]) + href
 
         elif href[0:7] == 'http://' or href[0:8] == 'https://':
             return href
 
         elif href[-1] == '/':
-            if not url[-1] == '/':
-                url += '/'
-            return url + href
+            if not base_url[-1] == '/':
+                base_url += '/'
+            return base_url + href
 
-    def scrape_all_links(self, soup:BeautifulSoup, url:str):
+    def scrape_all_links(self, soup:BeautifulSoup, base_url:str) -> dict:
+        """Scrapes all links from some HTML contents"""
         new_links = {}
         links = soup.find_all('a')
 
@@ -51,7 +54,7 @@ class LinkScraper(ContentScraper):
                 text = link.get_text().strip()
                 
                 if self.is_link(href):
-                    href = self.process_link(url, href)
+                    href = self.process_link(base_url, href)
                     new_links[text] = href
 
             except Exception: 
@@ -59,8 +62,9 @@ class LinkScraper(ContentScraper):
 
         return new_links
     
-    def run(self, url):
+    def run(self, base_url) -> dict:
+        """Returns a dictionary of all links in the format {text : href}"""
         soup = BeautifulSoup(
-            self.scrape_html(url), 
+            self.scrape_html(base_url), 
             features="html.parser")
-        return self.scrape_all_links(soup, url)
+        return self.scrape_all_links(soup, base_url)
