@@ -37,10 +37,36 @@ python run.py
 The discovery agent utilizes a LangChain agent execution chain to perform the agentic behavior. All it does is take a specific set of instructions written to look for programs not already put on a given section of the database (in our case, programs-display) and look specifically for a webpage containing just one internship and its overview information. 
 
 ### Models
+
+```
+src/
+└── models/
+    └── response_model.py
+```
+
 **Output** - `programs: List[HttpUrl]`<br>
 This stores the programs the agent finds as a list of URLs.
 
+### Prompt
+
+```
+src/
+└── prompts/
+    ├── assets/
+    │   └── prompt.py
+    └── prompt_create.py
+```
+
 ### Tools
+
+```
+src/
+└── tools/
+    ├── content_scraper.py
+    ├── ddgs_run.py
+    └── links_scraper.py
+```
+
 **Search** - `search (search_term:str, max_results:int)`<br>
 Using the DDGS search module, return the search results given a search term.<br><br>
 **Visit URL** - `visit_url (url:str)`<br>
