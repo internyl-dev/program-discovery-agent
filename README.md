@@ -57,6 +57,21 @@ src/
     └── prompt_create.py
 ```
 
+The model query aims at prioritizing the following:
+1. Returning pages with one unique program
+    - Each page should contain exactly one program
+        - If a page with a singular program cannot be found, return the overview page of the multiple programs
+        - Avoid list websites (eg. "Top 10 Internships")
+    - Each page should contain a unique program
+        - Check the given programs to make sure the program does not already exist
+2. Returning the overview page
+    - Look for the page with the overview information about the program
+3. Efficient search methods
+    - Subject specific
+    - Institution specific
+    - Program specific
+4. Deduplication
+
 ### Tools
 
 ```
