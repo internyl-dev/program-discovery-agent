@@ -45,5 +45,5 @@ This stores the programs the agent finds as a list of URLs.
 Using the DDGS search module, return the search results given a search term.<br><br>
 **Visit URL** - `visit_url (url:str)`<br>
 Using Playwright return the parsed webpage contents of a URL.<br><br>
-**Get All Linsk** - `get_all_links (url:str)`<br>
+**Get All Links** - `get_all_links (url:str)`<br>
 Using Playwright return all URLs found within a webpage.
