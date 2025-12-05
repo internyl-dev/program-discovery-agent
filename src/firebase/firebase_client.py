@@ -10,7 +10,7 @@ load_dotenv()
 
 class FirebaseClient:
 
-    def __init__(self):
+    def __init__(self) -> None:
         cred = credentials.Certificate(os.environ.get("FIREBASE_SDK_PATH"))
         firebase_admin.initialize_app(cred)
 
@@ -29,23 +29,23 @@ class FirebaseClient:
 
         return snapshot.to_dict()
 
-    def delete_document(self, collection_name:str, document_id:str):
+    def delete_document(self, collection_name:str, document_id:str) -> None:
         collection_ref = self.database.collection(collection_name)
         document_ref = collection_ref.document(document_id)
 
         document_ref.delete()
 
-    def add_document(self, collection_name:str, document:dict, id:str):
+    def add_document(self, collection_name:str, document:dict, id:str) -> None:
         collection_ref = self.database.collection(collection_name)
 
         collection_ref.document(id).set(document)
     
-    def add_indexed_document(self, collection_name:str, document:dict):
+    def add_indexed_document(self, collection_name:str, document:dict) -> None:
         collection_ref = self.database.collection(collection_name)
 
         link = document["overview"]["link"].replace("/", "\\")
         print(link)
-        documents = self.read_client.read_documents(collection_name)
+        documents = self.read_documents(collection_name)
         documents_with_link = [doc for doc in documents if link in doc]
         
         if not documents_with_link:

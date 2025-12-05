@@ -27,6 +27,7 @@ class ContentScraper:
                 return html
             
         except Exception as e:
+            raise e
             error_msg = str(e)
             if "ERR_ABORTED" in error_msg or "net::" in error_msg:
                 return f"Cannot access URL {url}: Network error or unsupported file type"
@@ -62,7 +63,7 @@ class ContentScraper:
         return soup
 
     @staticmethod
-    def clean_whitespace(soup:BeautifulSoup):
+    def clean_whitespace(soup:BeautifulSoup) -> str:
         """
         Converts a BeautifulSoup object to a string while also removing excessive white space from the string.
 
@@ -80,7 +81,7 @@ class ContentScraper:
 
         return contents
 
-    def run(self, url:str, declutter:bool=False):
+    def run(self, url:str, declutter:bool=False) -> str:
         raw_html = self.scrape_html(url)
         soup = BeautifulSoup(raw_html, features='html.parser')
         if declutter:

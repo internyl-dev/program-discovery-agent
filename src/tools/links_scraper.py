@@ -1,11 +1,12 @@
 import re
 from bs4 import BeautifulSoup
+from typing import Optional
 
 from .content_scraper import ContentScraper
 
-class LinkScraper(ContentScraper):
+class LinkScraper:
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
     @staticmethod
@@ -41,6 +42,8 @@ class LinkScraper(ContentScraper):
                 base_url += '/'
             return base_url + href
 
+        else: raise TypeError
+
     def scrape_all_links(self, soup:BeautifulSoup, base_url:str) -> dict:
         """Scrapes all links from some HTML contents"""
         new_links = {}
@@ -50,10 +53,12 @@ class LinkScraper(ContentScraper):
             try:
                 # Add link to dictionary with the associated text being the key
                 # L> For future filtering based off of keywords
-                href = link.get('href').strip()
+                href = link.get('href')
+                if isinstance(href, str):
+                    href.strip()
                 text = link.get_text().strip()
                 
-                if self.is_link(href):
+                if self.is_link(href) and isinstance(href, str):
                     href = self.process_link(base_url, href)
                     new_links[text] = href
 
@@ -62,9 +67,10 @@ class LinkScraper(ContentScraper):
 
         return new_links
     
-    def run(self, base_url) -> dict:
+    def run(self, base_url, scraper:Optional[ContentScraper]=None) -> dict:
         """Returns a dictionary of all links in the format {text : href}"""
+        scraper = scraper or ContentScraper()
         soup = BeautifulSoup(
-            self.scrape_html(base_url), 
+            scraper.scrape_html(base_url), 
             features="html.parser")
         return self.scrape_all_links(soup, base_url)

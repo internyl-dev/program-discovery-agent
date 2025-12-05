@@ -11,7 +11,7 @@ def denest_dict(d:dict):
             d[f"{key}{index}"] = d[key]
             del d[key]
 
-    def _decouple(l:list):
+    def _decouple(l:list|tuple):
         index=-1
 
         for i in l:
@@ -20,7 +20,7 @@ def denest_dict(d:dict):
                 _addindex(i, index)
                 _denest(i)
             
-            elif isinstance(i, (list, tuple)):
+            elif isinstance(i, list) | isinstance(i, tuple):
                 _decouple(i)
             
             else:
