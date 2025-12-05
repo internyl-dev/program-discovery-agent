@@ -32,3 +32,5 @@ query = "Find either virutal extracurricular programs in any US state or in-pers
 raw_response = agent_executor.invoke({"query": query})
 
 pp(raw_response)
+
+firebase.add_indexed_document("scrape-queue", raw_response)

@@ -15,5 +15,5 @@ if __name__ == "__main__":
     document = list(documents.values())[0]
 
     #firebase.add_indexed_document(collection_to_add, document)
-    firebase.move_duplicates("demo", "demo-history")
+    #firebase.move_duplicates("demo", "demo-history")
     
