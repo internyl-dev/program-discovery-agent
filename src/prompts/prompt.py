@@ -1,19 +1,22 @@
 
-from src.firebase import firebase
+from src.io.firebase import FirebaseClient
 from pprint import pp
 
+db = FirebaseClient.get_instance()
+def read_overviews(collection:str) -> list[str]:
+   docs = db.get_all_latest_entries("programs-display")
 
-def read_overviews(collection:str):
-    docs = list(firebase.read_documents(collection).values())
+   overviews = []
+   for doc in docs:
+      overview = docs[doc]["overview"]
+      title = overview["title"]
+      provider = overview["provider"]
+      link = overview["link"]
 
-    i=0
-    while i < len(docs):
-        pp(docs[i])
-        docs[i] = (docs[i]["overview"]["title"], docs[i]["overview"]["provider"])
-        pp(docs[i])
-        i+=1
+      info = f"Title: {title}. Provider: {provider}. Link: {link}\n"
+      overviews.append(info)
 
-    return docs
+   return overviews
 
 PROMPT = f"""
 You are given a dictionary of program information including links below.
@@ -105,11 +108,13 @@ For each potential program you discover:
 
 ## Output Format
 
-Return ONLY a clean Python list of URLs, one per line:
+Return ONLY a clean Python list of URLs, one per line.
+Example:
 ```python
 [
     "https://example.edu/programs/summer-research-internship",
     "https://research-org.org/high-school-fellowship",
     ...
 ]
+ CRITICAL: DO NOT RETURN ANYTHING BUT A LIST OF URLs. DO NOT RETURN ANY EXTRA COMMENTARY OR SITE CONTENTS.
 """

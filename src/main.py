@@ -1,12 +1,13 @@
 import os
 from pprint import pp
 from dotenv import load_dotenv
+import json
 from langchain_openai import AzureChatOpenAI
 from langchain.agents import create_tool_calling_agent, AgentExecutor
 
-from .firebase import firebase
-from .prompts import PromptCreator
-from .tools import ddgs_run, content_scraper, links_scraper
+from src.io.firebase import FirebaseClient
+from src.prompts import PromptCreator
+from src.tools import ddgs_run, content_scraper, links_scraper
 
 load_dotenv()
 
@@ -14,7 +15,6 @@ llm = AzureChatOpenAI(
     azure_deployment=os.getenv("AZURE_OPENAI_MODEL"),
     api_version="2024-05-01-preview",
     temperature=0,
-    max_tokens=None,
     timeout=None,
     max_retries=2
     )
@@ -33,4 +33,7 @@ raw_response = agent_executor.invoke({"query": query})
 
 pp(raw_response)
 
-firebase.add_indexed_document("scrape-queue", raw_response)
+response_dict = json.loads(raw_response["output"])
+
+for url in response_dict["programs"]:
+    FirebaseClient.get_instance().save("scrape-queue", {"url": url})

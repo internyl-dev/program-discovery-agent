@@ -20,7 +20,7 @@ content_scraper = Tool(
     name="visit_url",
     func=ContentScraper().run,
     description=(
-    "Use this tool to extract the information from a website.\n"
+    "Use this tool to extract the information from a website. Use this to understand the website contents.\n"
     "Parameters:\n"
     " - url (str): The url to extract the contents from."
     )
@@ -30,7 +30,7 @@ links_scraper = Tool(
     name="get_all_links",
     func=LinkScraper().run,
     description=(
-    "Use this tool to extract all links from within a website.\n"
+    "Use this tool to extract all links from within a website. Use this to navigate through the website.\n"
     "Parameters:\n"
     " - url (str): The url to extract the links from."
     )
